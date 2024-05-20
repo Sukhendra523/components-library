@@ -13,6 +13,7 @@ export default [
         myCustomGlobal: "readonly",
       },
     },
+    files:['./src/'],
     rules: {
       "@typescript-eslint/quotes": ["error", "double"],
       "@typescript-eslint/semi": ["error", "always"],
@@ -25,7 +26,4 @@ export default [
       },
     },
   },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReactConfig,
 ];

@@ -20,8 +20,8 @@ describe("Page", () => {
     const children = "this is children";
     const { getByTestId } = render(<Page title={title}>{children}</Page>);
 
-    const container = getByTestId('page-container')
+    const container = getByTestId("page-container");
 
-    expect(container).toHaveStyle('background-color: #f5f5f5')
+    expect(container).toHaveStyle("background-color: #f5f5f5");
   });
 });

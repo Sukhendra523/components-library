@@ -12,18 +12,18 @@ export default {
         title :{
             description:"This is Title of Page",
             control:{
-                type:'text'
+                type:"text"
             }
         },
         children :{
             description:"This is children of Page",
             control:{
-                type:'text'
+                type:"text"
             }
         }
     },
 
-}
+};
 
 
 

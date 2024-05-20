@@ -16,6 +16,23 @@ jobs:
       - run:
           name: Lint code
           command: npm run lint
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - package-lock.json
+            - package.json
+            - src
+            - .eslintrc.js
+            - .prettierrc.js
+            - .gitignore
+            - .npmignore
+            - .nvmrc
+            - .circleci
+            - rollup.config.mjs
+            - commitlint.config.js
+            - tsconfig.json
+            - .husky
   run_tests:
     executor: node/default
     description: Run tests

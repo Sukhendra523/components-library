@@ -17,6 +17,8 @@ jobs:
     executor: node/default
     description: Run tests
     steps:
+      - attach_workspace:
+        at: .
       - run:
           name: Run tests
           command: npm run test
@@ -24,6 +26,8 @@ jobs:
     executor: node/default
     description: Build
     steps:
+      - attach_workspace:
+        at: . 
       - run:
           name: Build
           command: npm run build

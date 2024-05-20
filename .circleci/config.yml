@@ -11,6 +11,9 @@ jobs:
       - checkout
       - node/install-packages
       - run:
+          name: Install dependencies
+          command: npm install
+      - run:
           name: Lint code
           command: npm run lint
   run_tests:

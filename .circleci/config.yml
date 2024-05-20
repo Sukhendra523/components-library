@@ -1,40 +1,101 @@
-# CircleCI configuration file
-
 version: 2.1
 
 orbs:
   node: circleci/node@5.0.2
 
 jobs:
-  lint: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
+  lint_code:
+    executor: node/default
     description: Lint code
     steps:
       - checkout
-      - node/install-packages:
+      - node/install-packages
       - run:
-          command: npm run lint
-          name: Lint Code
-  test: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
-    description: Run Test
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Lint code
+          command: npm run lint:fix
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - package-lock.json
+            - package.json
+            - src
+            - .eslintrc.js
+            - .prettierrc.js
+            - .gitignore
+            - .npmignore
+            - .nvmrc
+            - .circleci
+            - rollup.config.mjs
+            - commitlint.config.js
+            - tsconfig.json
+            - .husky
+  run_tests:
+    executor: node/default
+    description: Run tests
     steps:
+      - attach_workspace:
+          at: .
       - run:
+          name: Run tests
           command: npm run test
-          name: Run test
-  build: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
-    description: Build App
+  build:
+    executor: node/default
+    description: Build
     steps:
+      - attach_workspace:
+          at: .
       - run:
+          name: Build
           command: npm run build
-          name: Build App
+  run_release:
+    executor: node/default
+    description: Run release
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Set up git credentials
+          command: |
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_NAME
+      - run:
+          name: Run release
+          command: |
+            npm run release
+            git push --follow-tags "https://${GH_TOKEN}@github.com/imran-codes/react-component-library.git" main
+  publish_to_npm:
+    executor: node/default
+    description: Publish to npm
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Check if npm version is the same and publish to npm
+          command: |
+            CURRENT_VERSION=$(npm show imran-codes-react-component-library version)
+            LOCAL_VERSION=$(node -pe "require('./package.json').version")
 
-workflow:
+            if [ "$CURRENT_VERSION" != "$LOCAL_VERSION" ]; then
+              echo "Versions are different. Publishing to npm."
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+              npm publish
+            else
+              echo "Versions are the same. Skipping npm publish."
+            fi
+workflows:
   build_app:
     jobs:
-      - lint
-      - test
-      - build
-
-
+      - lint_code
+      - run_tests:
+          requires:
+            - lint_code
+      - build:
+          requires:
+            - run_tests
+      - publish_to_npm:
+          requires:
+            - build

@@ -1,0 +1,40 @@
+# CircleCI configuration file
+
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+
+jobs:
+  lint: # this can be any name you choose
+    executor: node/default # use the default executor defined within the orb
+    description: Lint code
+    steps:
+      - checkout
+      - node/install-packages:
+      - run:
+          command: npm run lint
+          name: Lint Code
+  test: # this can be any name you choose
+    executor: node/default # use the default executor defined within the orb
+    description: Run Test
+    steps:
+      - run:
+          command: npm run test
+          name: Run test
+  build: # this can be any name you choose
+    executor: node/default # use the default executor defined within the orb
+    description: Build App
+    steps:
+      - run:
+          command: npm run build
+          name: Build App
+
+workflow:
+  build_app:
+    jobs:
+      - lint
+      - test
+      - build
+
+

@@ -42,6 +42,15 @@ jobs:
       - run:
           name: Run tests
           command: npm run test
+  run_release:
+    executor: node/default
+    description: Run Release
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Run Release 
+          command: npm run release
   build:
     executor: node/default
     description: Build

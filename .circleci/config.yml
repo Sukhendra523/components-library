@@ -15,7 +15,7 @@ jobs:
           command: npm install
       - run:
           name: Lint code
-          command: npm run lint:fix
+          command: npm run lint
       - persist_to_workspace:
           root: .
           paths:

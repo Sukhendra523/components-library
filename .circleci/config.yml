@@ -15,7 +15,7 @@ jobs:
           command: npm install
       - run:
           name: Lint code
-          command: npm run lint
+          command: npm run lint:fix
       - persist_to_workspace:
           root: .
           paths:
@@ -42,30 +42,6 @@ jobs:
       - run:
           name: Run tests
           command: npm run test
-  run_release:
-    executor: node/default
-    description: Run Release
-    steps:
-      - checkout
-      - node/install-packages
-      - run:
-          name: set git config
-          command: |
-            git config --global user.name $GIT_USERNAME
-            git config --global user.email $GIT_EMAIL
-      - run:
-          name: Run Release 
-          command: npm run release
-  publish_to_npm:
-    executor: node/default
-    description: publish package to npm 
-    steps:
-      - checkout
-      - node/install-packages
-      - run:
-          name: publish to npm
-          command: npm publish
-          environment: $NPM_TOKEN
   build:
     executor: node/default
     description: Build
@@ -75,6 +51,40 @@ jobs:
       - run:
           name: Build
           command: npm run build
+  run_release:
+    executor: node/default
+    description: Run release
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Set up git credentials
+          command: |
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_USERNAME
+      - run:
+          name: Run release
+          command: |
+            npm run release
+  publish_to_npm:
+    executor: node/default
+    description: Publish to npm
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Check if npm version is the same and publish to npm
+          command: |
+            CURRENT_VERSION=$(npm show components-library-by-sukhendra523 version)
+            LOCAL_VERSION=$(node -pe "require('./package.json').version")
+
+            if [ "$CURRENT_VERSION" != "$LOCAL_VERSION" ]; then
+              echo "Versions are different. Publishing to npm."
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+              npm publish
+            else
+              echo "Versions are the same. Skipping npm publish."
+            fi
 workflows:
   build_app:
     jobs:
@@ -85,9 +95,6 @@ workflows:
       - build:
           requires:
             - run_tests
-      - run_release:
-          requires:
-            - build
       - publish_to_npm:
           requires:
-            - run_release
+            - build

@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Check if npm version is the same and publish to npm
           command: |
-            CURRENT_VERSION=$(npm show components-library-by-sukhendra523 version)
+            CURRENT_VERSION=$(npm show components-library version)
             LOCAL_VERSION=$(node -pe "require('./package.json').version")
 
             if [ "$CURRENT_VERSION" != "$LOCAL_VERSION" ]; then

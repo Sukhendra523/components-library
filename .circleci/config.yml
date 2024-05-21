@@ -66,6 +66,7 @@ jobs:
           name: Run release
           command: |
             npm run release
+            git push --follow-tags "https://${GIT_TOKEN}@github.com/sukhendra523/components-library.git" master
   publish_to_npm:
     executor: node/default
     description: Publish to npm
@@ -95,6 +96,9 @@ workflows:
       - build:
           requires:
             - run_tests
-      - publish_to_npm:
+      - run_release:
           requires:
             - build
+      - publish_to_npm:
+          requires:
+            - run_release

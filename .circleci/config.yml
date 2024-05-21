@@ -49,8 +49,23 @@ jobs:
       - checkout
       - node/install-packages
       - run:
+          name: set git config
+          command: |
+            git config --global user.name $GIT_USERNAME
+            git config --global user.email $GIT_EMAIL
+      - run:
           name: Run Release 
           command: npm run release
+  publish_to_npm:
+    excutor: node/default
+    description: publish package to npm 
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: publish to npm
+          command: npm publish
+          environment: $NPM_TOKEN
   build:
     executor: node/default
     description: Build
@@ -70,3 +85,9 @@ workflows:
       - build:
           requires:
             - run_tests
+      - run_release:
+          requires:
+            - build
+      - publish_to_npm:
+          requires:
+            - run_release

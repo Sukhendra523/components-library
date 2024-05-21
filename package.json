@@ -1,7 +1,7 @@
 {
-  "name": "components-library",
+  "name": "components-library-by-sukhendra523",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a react components library by sukhendra523",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",

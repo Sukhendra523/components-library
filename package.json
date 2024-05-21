@@ -16,7 +16,8 @@
     "build-storybook": "storybook build",
     "prepare": "husky",
     "lint": "eslint ",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "release": "standard-version"
   },
   "jest": {
     "testEnvironment": "jsdom"

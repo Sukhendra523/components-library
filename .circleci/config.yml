@@ -60,8 +60,8 @@ jobs:
       - run:
           name: Set up git credentials
           command: |
-            git config --global user.email $GIT_EMAIL
-            git config --global user.name $GIT_USERNAME
+            git config user.email $GIT_EMAIL
+            git config user.name $GIT_USERNAME
       - run:
           name: Run release
           command: |
